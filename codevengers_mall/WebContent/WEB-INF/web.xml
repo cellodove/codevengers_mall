@@ -12,6 +12,14 @@
 		<welcome-file>default.htm</welcome-file>
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
+	<servlet>
+		<servlet-name>FrontController</servlet-name>
+		<servlet-class>ven.shop.controller.MemberFrontController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FrontController</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
 	<filter>
 		<filter-name>Encoding</filter-name>
 		<filter-class>ven.shop.filter.EncodingFilter</filter-class>

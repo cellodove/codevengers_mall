@@ -1,41 +1,92 @@
 package ven.shop.controller;
 
 import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet implementation class MemberFrontController
- */
+import ven.member.service.MemberAddService;
+import ven.member.service.MemberCertifiedService;
+import ven.member.service.MemberLoginService;
+import ven.shop.action.Action;
+import ven.shop.command.ActionCommand;
+
 @WebServlet("/MemberFrontController")
 public class MemberFrontController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public MemberFrontController() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// 서블릿 맵핑명을 설정한다.
+		String requestURI = request.getRequestURI();
+		String contextPath = request.getContextPath();
+		String pathURL = requestURI.substring(contextPath.length());
+
+		// 포워딩 정보 저장
+		ActionCommand actionCommand = null;
+		// 메소드 규격화
+		Action action = null;
+
+		// 맵핑명 지정하고 서블릿 클래스 설정
+
+		if (pathURL.equals("/MemberLogin.do")) {
+			action = new MemberLoginService();
+			System.out.println("연결");
+
+			try {
+				actionCommand = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if (pathURL.equals("/MemberAdd.do")) {
+			action = new MemberAddService();
+			try {
+				actionCommand = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if (pathURL.equals("/MemberWrite.do")) {
+			actionCommand = new ActionCommand();
+			// 포워드로 한다.
+			actionCommand.setRedirect(false);
+			// 회원가입 페이지로 이동한다.
+			actionCommand.setPath("./member/member_signup.jsp");
+
+		} else if (pathURL.equals("/Mail.do")) {
+			System.out.println("연결");
+			action = new MemberCertifiedService();
+			try {
+				actionCommand = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if (actionCommand != null) {
+			// isRedirect 메소드 값이 false이면 forward 방식이고 true이면 redirect 방식이 된다.
+			if (actionCommand.isRedirect()) {
+				response.sendRedirect(actionCommand.getPath());
+			} else {
+				RequestDispatcher dispatcher = request.getRequestDispatcher(actionCommand.getPath());
+				dispatcher.forward(request, response);
+			}
+		}
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+
+	// HTTP 요청이 get 메소드 방식인지를 확인하고 service 메소드를 호출한다.
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		service(request, response);
+	}
+
+	// HTTP 요청이 post 메소드 방식인지를 확인하고 service 메소드를 호출한다.
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		service(request, response);
 	}
 
 }

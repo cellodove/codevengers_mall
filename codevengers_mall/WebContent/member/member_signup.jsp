@@ -153,7 +153,7 @@
 </head>
 <body>
     <h1>회원 가입</h1>
-    <form action="">
+    <form action="./MemberAdd.do" method="post" name="signupform">
         <table id="jointable">
             <tr>
                 <th>아이디</th>
@@ -256,7 +256,7 @@
             <tr>
  
                 <td colspan="2">
-                    <input type="button" id="btn_join" value="가입">
+                    <input type="submit" id="btn_join" value="가입">
                     <input type="reset" id="btn_cancel" value="취소">
                 </td>
             </tr>

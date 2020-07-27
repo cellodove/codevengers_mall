@@ -28,7 +28,7 @@ public class MemberDAO {
 	}
 
 	public boolean memberInsert(MemberVO memberVO) {
-		int num=0;
+		int mem_num=0;
 		String sql="";
 		int result = 0;
 		
@@ -41,17 +41,17 @@ public class MemberDAO {
 			DataSource dataSource = (DataSource)context.lookup("java:comp/env/jdbc");
 			connection=dataSource.getConnection();
 			//회원 번호의 최댓값 조회 글 등록할때 번호 순차적으로 지정
-			sql="select max(num) from member";
+			sql="select max(mem_num) from member";
 			preparedStatement = connection.prepareStatement(sql);
 			resultSet=preparedStatement.executeQuery();
 			
 			//만약 값이 있다면
 			if(resultSet.next()) {
 				//회원의 최댓값num에서 +1한다.그뒤로 저장해야하니깐
-				num=resultSet.getInt(1)+1;
+				mem_num=resultSet.getInt(1)+1;
 			} else {
 				//다음값으없다면 지금쓰는글이 첫번째니깐 1번
-				num=1;
+				mem_num=1;
 			}
 			// 일단 검색했으면 종료 왜냐 한번더 검색해서 데이터를 가지고오기위해서
 			preparedStatement.close();
@@ -62,27 +62,27 @@ public class MemberDAO {
 			sql+=" values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,sysdate,?,?,?)";
 			
 			preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setInt(1, num);
+			preparedStatement.setInt(1, mem_num);
 			preparedStatement.setString(2, memberVO.getMem_id());
 			preparedStatement.setString(3, memberVO.getMem_passwd());
 			preparedStatement.setString(4, memberVO.getMem_name());
-			preparedStatement.setDate(4, memberVO.getMem_birth());
-			preparedStatement.setInt(5, memberVO.getMem_tel1());
-			preparedStatement.setInt(6, memberVO.getMem_tel2());
-			preparedStatement.setInt(7, memberVO.getMem_tel3());
-			preparedStatement.setInt(8, memberVO.getMem_zipcode());
-			preparedStatement.setString(9, memberVO.getMem_address1());
-			preparedStatement.setString(10, memberVO.getMem_address2());
-			preparedStatement.setString(11, memberVO.getMem_gender());
-			preparedStatement.setString(12, memberVO.getMem_email());
-			preparedStatement.setInt(13, memberVO.getMem_email_ck());
-			preparedStatement.setString(14, memberVO.getMem_grade());
-			preparedStatement.setInt(15, memberVO.getMem_point());
-			preparedStatement.setInt(16, memberVO.getMem_receive_email());
-			preparedStatement.setInt(17, memberVO.getMem_receive_sms());
-			preparedStatement.setString(18, memberVO.getMem_adminmemo());
-			preparedStatement.setString(19, memberVO.getMem_group());
-			preparedStatement.setInt(20, 0);
+			preparedStatement.setDate(5, memberVO.getMem_birth());
+			preparedStatement.setInt(6, memberVO.getMem_tel1());
+			preparedStatement.setInt(7, memberVO.getMem_tel2());
+			preparedStatement.setInt(8, memberVO.getMem_tel3());
+			preparedStatement.setInt(9, memberVO.getMem_zipcode());
+			preparedStatement.setString(10, memberVO.getMem_address1());
+			preparedStatement.setString(11, memberVO.getMem_address2());
+			preparedStatement.setString(12, memberVO.getMem_gender());
+			preparedStatement.setString(13, memberVO.getMem_email());
+			preparedStatement.setInt(14, memberVO.getMem_email_ck());
+			preparedStatement.setString(15, memberVO.getMem_grade());
+			preparedStatement.setInt(16, memberVO.getMem_point());
+			preparedStatement.setInt(17, memberVO.getMem_receive_email());
+			preparedStatement.setInt(18, memberVO.getMem_receive_sms());
+			preparedStatement.setString(19, memberVO.getMem_adminmemo());
+			preparedStatement.setString(20, memberVO.getMem_group());
+			preparedStatement.setInt(21, memberVO.getMem_manager());
 			
 			result = preparedStatement.executeUpdate();
 			if (result==0) {
@@ -107,7 +107,39 @@ public class MemberDAO {
 	}
 	
 	
-	
+	public boolean emailCheck(MemberVO memberVO) {
+		String sql="";
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		try {
+			Context context = new InitialContext();
+			DataSource dataSource = (DataSource)context.lookup("java:comp/env/jdbc");
+			connection=dataSource.getConnection();
+			
+			//회원 번호의 최댓값 조회 글 등록할때 번호 순차적으로 지정
+			sql="update member set mem_email_ck = 1 where mem_email = '?'";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, memberVO.getMem_email());
+			resultSet=preparedStatement.executeQuery();
+			
+			
+		} catch (Exception e) {
+			System.out.println("emailCheck 에러");
+			e.printStackTrace();
+		}finally {
+			try {
+				resultSet.close();
+				preparedStatement.close();
+				connection.close();
+			} catch (SQLException e) {
+				System.out.println("emailCheck DB에러");
+				e.printStackTrace();
+			}
+		}
+		return false; 
+	}
 	
 	
 	

@@ -20,8 +20,9 @@ public class MemberCertifiedService implements Action{
 
 	@Override
 	public ActionCommand execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
 		String mem_email = request.getParameter("mem_email");
-
+		ActionCommand actionCommand = new ActionCommand();
 		// 먼저 아이디로 회원정보를 받아오고 가져온 데이터에서 email값을 비교하여 존재하지 않으면 인증메일 보내지 못함
 		/*
 		 * Member m = new MemberService().memberLogin(memberId); if(m==null ||
@@ -70,6 +71,8 @@ public class MemberCertifiedService implements Action{
 		}
 		String AuthenticationKey = temp.toString();
 		System.out.println("난수입니다."+AuthenticationKey);
+		
+		
 
 		Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
@@ -90,6 +93,8 @@ public class MemberCertifiedService implements Action{
 
 			Transport.send(msg);
 			System.out.println("이메일 전송");
+			
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();// TODO: handle exception
@@ -102,7 +107,16 @@ public class MemberCertifiedService implements Action{
 		 * req.getRequestDispatcher("/views/login_myPage/searchPasswordEnd.jsp").forward
 		 * (req, resp);
 		 */
-		return null;
+		
+		
+		request.setAttribute("AuthenticationKey", AuthenticationKey);
+		request.setAttribute("mem_email", mem_email);
+		actionCommand.setRedirect(false);
+		actionCommand.setPath("./member/member_email_check.jsp");
+		
+		System.out.println();
+		return actionCommand;
+		
 	}
 
 }

@@ -10,7 +10,7 @@ import ven.shop.command.ActionCommand;
 public class MemberLoginService implements Action {
 	@Override
 	public ActionCommand execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("연결2");
+		System.out.println("memberloginservice연결");
 		
 		ActionCommand actionCommand = new ActionCommand();
 		//리다이렉트안하니깐 포워드로하고

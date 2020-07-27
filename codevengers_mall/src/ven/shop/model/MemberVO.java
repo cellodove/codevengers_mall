@@ -47,8 +47,19 @@ public class MemberVO {
 	private String mem_group;
 	
 	private int mem_manager;
-
 	
+///////////////////////////////////////////////////////////////////////////////////
+	//인증코드 저장변수
+	private String authenticationKey;
+	
+	public String getAuthenticationKey() {
+		return authenticationKey;
+	}
+
+	public void setAuthenticationKey(String authenticationKey) {
+		this.authenticationKey = authenticationKey;
+	}
+///////////////////////////////////////////////////////////////////////////////////
 	public int getMem_num() {
 		return mem_num;
 	}

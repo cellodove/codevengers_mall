@@ -8,7 +8,5 @@
 </head>
 <body>
 <a href="http://localhost:8090/codevengers_mall/MemberLogin.do">로그인 </a>
-
-
 </body>
 </html>

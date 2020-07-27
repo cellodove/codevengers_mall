@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ven.member.service.MemberAddService;
 import ven.member.service.MemberCertifiedService;
+import ven.member.service.MemberEmailCodeService;
 import ven.member.service.MemberLoginService;
 import ven.shop.action.Action;
 import ven.shop.command.ActionCommand;
@@ -35,7 +36,7 @@ public class MemberFrontController extends HttpServlet {
 
 		if (pathURL.equals("/MemberLogin.do")) {
 			action = new MemberLoginService();
-			System.out.println("연결");
+			System.out.println("memberlogin.do연결");
 
 			try {
 				actionCommand = action.execute(request, response);
@@ -44,6 +45,7 @@ public class MemberFrontController extends HttpServlet {
 			}
 		} else if (pathURL.equals("/MemberAdd.do")) {
 			action = new MemberAddService();
+			System.out.println("memberAdd.do연결");
 			try {
 				actionCommand = action.execute(request, response);
 			} catch (Exception e) {
@@ -51,20 +53,36 @@ public class MemberFrontController extends HttpServlet {
 			}
 		} else if (pathURL.equals("/MemberWrite.do")) {
 			actionCommand = new ActionCommand();
+			System.out.println("memberWrite.do연결");
 			// 포워드로 한다.
 			actionCommand.setRedirect(false);
 			// 회원가입 페이지로 이동한다.
 			actionCommand.setPath("./member/member_signup.jsp");
 
-		} else if (pathURL.equals("/Mail.do")) {
-			System.out.println("연결");
+		} else if (pathURL.equals("/MemberMail.do")) {
+			System.out.println("memberMail.do연결");
 			action = new MemberCertifiedService();
 			try {
 				actionCommand = action.execute(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if (pathURL.equals("/MemberMailCheck.do")) {
+			System.out.println("memberMailCheck.do연결");
+			action = new MemberEmailCodeService();
+			try {
+				actionCommand = action.execute(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+		
 		}
+		
+		
+		
+		
+		
 		if (actionCommand != null) {
 			// isRedirect 메소드 값이 false이면 forward 방식이고 true이면 redirect 방식이 된다.
 			if (actionCommand.isRedirect()) {

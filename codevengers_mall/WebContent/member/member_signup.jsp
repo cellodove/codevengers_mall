@@ -27,10 +27,13 @@
     $(document)
             .ready(
                     function() {
+                    	$.datepicker.setDefaults({
+                    	    dateFormat: 'yy-mm-dd' //Input Display Format 변경
+                    	    ,showOtherMonths: true
+                    	});
                         $("#btn_join")
                                 .click(
                                         function() {
- 
                                             var tel1_pattern = /(^01[016789]$)/; //정규식
  
                                             //alert("ok");
@@ -147,7 +150,9 @@
                                                 alert("가입되었습니다");
                                             }
                                         });
+                      
                         $("#mem_birth").datepicker();
+                        
                     });
 </script>
 </head>
@@ -194,9 +199,9 @@
             <tr>
                 <th>전화번호</th>
                 <td>
-                    <input type="text" name="tel1" id="tel1" size="3"maxlength="3" />- 
-                    <input type="text" name="tel2" id="tel2"size="4" maxlength="4" />- 
-                    <input type="text" name="tel3" id="tel3" size="4" maxlength="4" />
+                    <input type="text" name="mem_tel1" id="tel1" size="3"maxlength="3" />- 
+                    <input type="text" name="mem_tel2" id="tel2"size="4" maxlength="4" />- 
+                    <input type="text" name="mem_tel3" id="tel3" size="4" maxlength="4" />
                 </td>
             </tr>
             
@@ -231,8 +236,7 @@
                 <th>이메일</th>
                 <td>
                     <input type="text" name="mem_email" id="email" size="50"maxlength="50" />
-                    <input type="button" value="이메일 인증하기"><br>
-                    <input type="text" value=""><input type="button" value="확인코드입력">
+                    
                 </td>
             </tr>
  
@@ -262,5 +266,10 @@
             </tr>
         </table>
     </form>
+    
+    
+    
+    
+    
 </body>
 </html>

@@ -34,7 +34,7 @@ public class MemberEmailCodeService implements Action {
         	request.setAttribute("msg", "인증번호가 일치합니다 인증되었습니다.");
         	memberVO.setMem_email(mem_email);
         	memberDAO.emailCheck(memberVO);
-        	actionCommand.setPath("./member/main.jsp");
+        	actionCommand.setPath("./member/main_form.jsp");
         	return actionCommand;
         }
 	}

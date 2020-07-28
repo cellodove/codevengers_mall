@@ -104,7 +104,7 @@
                                                     & $("#tel2").val().length > 4
                                                     & isNaN($("#tel2").val())) {
                                                 alert("okkkkkkk");
-                                                var pattern = /(^01[0]$)/; //정규식 슬래쉬(/)로 시작해서, 슬래쉬(/)로 끝났다.
+                                                //var pattern = /(^010$)/; //정규식 슬래쉬(/)로 시작해서, 슬래쉬(/)로 끝났다.
                                                 var tel1 = $("#tel2").val();
                                                 if (!pattern.test(tel1)) {
                                                     //틀리면

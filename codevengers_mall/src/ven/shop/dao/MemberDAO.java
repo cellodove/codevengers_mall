@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -112,6 +113,7 @@ public class MemberDAO {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
+		System.out.println(memberVO.getMem_email());
 		
 		try {
 			Context context = new InitialContext();
@@ -119,7 +121,7 @@ public class MemberDAO {
 			connection=dataSource.getConnection();
 			
 			//회원 번호의 최댓값 조회 글 등록할때 번호 순차적으로 지정
-			sql="update member set mem_email_ck = 1 where mem_email = '?'";
+			sql="update member set mem_email_ck = 1 where mem_email = ?";
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(1, memberVO.getMem_email());
 			resultSet=preparedStatement.executeQuery();
@@ -142,7 +144,218 @@ public class MemberDAO {
 	}
 	
 	
+	public boolean loginCheck(MemberVO memberVO) {
+		String sql="";
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		System.out.println(memberVO.getMem_id());
+		System.out.println(memberVO.getMem_passwd());
+		
+		try {
+			Context context = new InitialContext();
+			DataSource dataSource = (DataSource)context.lookup("java:comp/env/jdbc");
+			connection=dataSource.getConnection();
+			
+			//회원 번호의 최댓값 조회 글 등록할때 번호 순차적으로 지정
+			sql="select mem_id, mem_passwd from member where mem_id = ? and mem_passwd = ? ";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, memberVO.getMem_id());
+			preparedStatement.setString(2, memberVO.getMem_passwd());
+			
+			resultSet=preparedStatement.executeQuery();
+			int result = preparedStatement.executeUpdate();
+			
+			if (result==0) {
+				System.out.println("비밀번호나 아이디가 틀렸습니다.");
+				return false;
+			}else {
+				System.out.println("로그인 되었습니다.");
+				return true;
+			}
+			
+		} catch (Exception e) {
+			System.out.println("emailCheck 에러");
+			e.printStackTrace();
+		}finally {
+			try {
+				resultSet.close();
+				preparedStatement.close();
+				connection.close();
+			} catch (SQLException e) {
+				System.out.println("emailCheck DB에러");
+				e.printStackTrace();
+			}
+		}
+		return false;
+		
+	}
 	
+	
+	public boolean memberInfo(MemberVO memberVO) {
+		String sql="";
+		
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		try {
+			Context context = new InitialContext();
+			DataSource dataSource = (DataSource)context.lookup("java:comp/env/jdbc");
+			connection=dataSource.getConnection();
+
+			
+			sql="select mem_num,mem_id,mem_passwd,mem_name,mem_birth,mem_tel1,mem_tel2,mem_tel3,mem_zipcode,mem_address1,mem_address2,mem_gender,mem_email,mem_email_ck,mem_grade,mem_point,mem_receive_email,mem_receive_sms,mem_register_datetime from member";
+			sql+=" where mem_id = ?";
+			
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, memberVO.getMem_id());
+			
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				memberVO.setMem_id(resultSet.getString("mem_id"));
+				memberVO.setMem_passwd(resultSet.getString("mem_passwd"));
+				memberVO.setMem_name(resultSet.getString("mem_name"));
+				memberVO.setMem_birth(resultSet.getDate("mem_birth"));
+				memberVO.setMem_tel1(resultSet.getInt("mem_tel1"));
+				memberVO.setMem_tel2(resultSet.getInt("mem_tel2"));
+				memberVO.setMem_tel3(resultSet.getInt("mem_tel3"));
+				memberVO.setMem_zipcode(resultSet.getInt("mem_zipcode"));
+				memberVO.setMem_address1(resultSet.getString("mem_address1"));
+				memberVO.setMem_address2(resultSet.getString("mem_address2"));
+				memberVO.setMem_gender(resultSet.getString("mem_gender"));
+				memberVO.setMem_email(resultSet.getString("mem_email"));
+				memberVO.setMem_email_ck(resultSet.getInt("mem_email_ck"));
+				memberVO.setMem_grade(resultSet.getString("mem_grade"));
+				memberVO.setMem_point(resultSet.getInt("mem_point"));
+				memberVO.setMem_receive_email(resultSet.getInt("mem_receive_email"));
+				memberVO.setMem_receive_sms(resultSet.getInt("mem_receive_sms"));
+				memberVO.setMem_register_datetime(resultSet.getDate("mem_register_datetime"));
+			}	
+		} catch (Exception e) {
+			System.out.println("memberInfo 에러");
+			e.printStackTrace();
+		}finally {
+			try {
+				resultSet.close();
+				preparedStatement.close();
+				connection.close();
+			} catch (SQLException e) {
+				System.out.println("DB에 문제있다ㅜㅜ");
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+	
+	public boolean memberDelete(MemberVO memberVO) {
+		String sql="";
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		System.out.println(memberVO.getMem_id());
+		System.out.println(memberVO.getMem_passwd());
+		
+		try {
+			Context context = new InitialContext();
+			DataSource dataSource = (DataSource)context.lookup("java:comp/env/jdbc");
+			connection=dataSource.getConnection();
+			
+			sql="select mem_id, mem_passwd from member where mem_id = ? and mem_passwd = ? ";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, memberVO.getMem_id());
+			preparedStatement.setString(2, memberVO.getMem_passwd());
+			
+			
+			
+			resultSet=preparedStatement.executeQuery();
+			int result = preparedStatement.executeUpdate();
+			
+			if (result==0) {
+				System.out.println("비밀번호가 틀렸습니다.");
+				return false;
+			}else {
+				System.out.println("삭제되었습니다.");
+				preparedStatement.close();
+				sql = "delete from member where mem_id=?";
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setString(1, memberVO.getMem_id());
+				return true;
+			}
+			
+		} catch (Exception e) {
+			System.out.println("memberDelete 에러");
+			e.printStackTrace();
+		}finally {
+			try {
+				resultSet.close();
+				preparedStatement.close();
+				connection.close();
+			} catch (SQLException e) {
+				System.out.println("memberDelete DB에러");
+				e.printStackTrace();
+			}
+		}
+		return false;
+		
+	}
+	
+	public boolean memberModityChange(MemberVO memberVO) {
+		String sql="";
+		int result = 0;
+		
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		
+		try {
+			Context context = new InitialContext();
+			DataSource dataSource = (DataSource)context.lookup("java:comp/env/jdbc");
+			connection=dataSource.getConnection();
+
+			sql = "update member set mem_passwd=?,mem_name=?,mem_birth=?,mem_tel1=?,mem_tel2=?,mem_tel3=?,mem_zipcode=?,mem_address1=?,mem_address2=?,mem_gender=?,mem_email=?,mem_receive_email=?,mem_receive_sms=?";
+			sql += " where mem_id=?";
+			
+			
+			
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, memberVO.getMem_passwd());
+			preparedStatement.setString(2, memberVO.getMem_name());
+			preparedStatement.setDate(3, memberVO.getMem_birth());
+			preparedStatement.setInt(4, memberVO.getMem_tel1());
+			preparedStatement.setInt(5, memberVO.getMem_tel2());
+			preparedStatement.setInt(6, memberVO.getMem_tel3());
+			preparedStatement.setInt(7, memberVO.getMem_zipcode());
+			preparedStatement.setString(8, memberVO.getMem_address1());
+			preparedStatement.setString(9, memberVO.getMem_address2());
+			preparedStatement.setString(10, memberVO.getMem_gender());
+			preparedStatement.setString(11, memberVO.getMem_email());
+			preparedStatement.setInt(12, memberVO.getMem_receive_email());
+			preparedStatement.setInt(13, memberVO.getMem_receive_sms());
+			preparedStatement.setString(14, memberVO.getMem_id());
+			
+			
+			result = preparedStatement.executeUpdate();
+			if (result==0) {
+				return false;
+			}else {
+				return true;
+			}
+		} catch (Exception e) {
+			System.out.println("회원수정 실패했다 ㅜㅜ");
+			e.printStackTrace();
+		}finally {
+			try {
+				preparedStatement.close();
+				connection.close();
+			} catch (SQLException e) {
+				System.out.println("DB에 문제있다ㅜㅜ");
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
 	
 	
 	
